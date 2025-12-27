@@ -332,10 +332,13 @@ const MarketAnalysis: React.FC = () => {
 };
 
 const VideoTestimonials: React.FC = () => {
-  const videos = [
-    { id: "h__uc7vO_Ns", title: "Caso Real de Aluno #1" },
-    { id: "BOxHuCDnjiM", title: "Caso Real de Aluno #2" },
-    { id: "umQuBt-0YeI", title: "Caso Real de Aluno #3" },
+  const testimonials = [
+    { image: "/depoimentos/depoimento-1.jpg" },
+    { image: "/depoimentos/depoimento-2.jpg" },
+    { image: "/depoimentos/depoimento-3.jpg" },
+    { image: "/depoimentos/depoimento-4.jpg" },
+    { image: "/depoimentos/depoimento-5.jpg" },
+    { image: "/depoimentos/depoimento-6.jpg" }
   ];
 
   return (
@@ -350,47 +353,28 @@ const VideoTestimonials: React.FC = () => {
           <div className="w-16 md:w-24 h-1.5 bg-blue-500 mx-auto rounded-full mb-12"></div>
         </div>
 
-        {/* --- CASOS REAIS AMPLIADO - PLAYER DIRETO --- */}
-        <div className="max-w-3xl mx-auto mb-20 px-2 md:px-4">
-          <div className="rounded-[2rem] md:rounded-[4rem] overflow-hidden border-2 border-blue-500/40 bg-black shadow-[0_0_80px_rgba(59,130,246,0.3)] aspect-video relative">
-            <iframe 
-              className="absolute inset-0 w-full h-full"
-              src="https://www.youtube-nocookie.com/embed/uX1is8qhHAQ?modestbranding=1&rel=0&showinfo=0"
-              title="CASOS REAIS COMPILADO"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            ></iframe>
-          </div>
-          <div className="text-center mt-8">
-             <h3 className="font-tech font-black text-2xl md:text-5xl text-white uppercase tracking-tighter">
-                CASOS <span className="text-blue-500">REAIS</span>
-              </h3>
-              <p className="text-gray-400 font-bold text-xs md:text-sm uppercase tracking-[0.3em] mt-2">DEPOIMENTOS DE NOSSOS ALUNOS</p>
-          </div>
-        </div>
-        
-        {/* Grid de Depoimentos Individuais - PLAYER DIRETO */}
-        <div className="grid md:grid-cols-3 gap-8 md:gap-10 max-w-7xl mx-auto mb-8">
-          {videos.map((video, i) => (
-            <div key={i} className="flex flex-col">
-              <div className="bg-black rounded-[2rem] overflow-hidden border border-white/10 shadow-2xl aspect-video relative">
-                <iframe 
-                  className="absolute inset-0 w-full h-full"
-                  src={`https://www.youtube-nocookie.com/embed/${video.id}?modestbranding=1&rel=0&showinfo=0`}
-                  title={video.title}
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                ></iframe>
+        {/* Grid de Depoimentos de Alunos */}
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto mb-8">
+          {testimonials.map((testimonial, i) => (
+            <div key={i} className="group relative rounded-2xl md:rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl bg-white/5 hover:border-blue-500/40 transition-all">
+              <div className="aspect-[4/5] relative overflow-hidden bg-black/20 flex items-center justify-center">
+                <img 
+                  src={testimonial.image}
+                  alt="Depoimento de Aluno"
+                  className="w-full h-full object-contain group-hover:scale-105 transition-all duration-700"
+                  loading="lazy"
+                />
               </div>
             </div>
           ))}
         </div>
         <div className="text-center mt-8 md:mt-12">
-          <p className="text-white font-tech font-black text-lg md:text-2xl lg:text-3xl uppercase tracking-wider px-6 py-4 md:px-8 md:py-6 rounded-xl md:rounded-2xl bg-blue-500/20 border border-blue-500/40 shadow-[0_0_30px_rgba(14,165,233,0.6),0_0_60px_rgba(14,165,233,0.3)]">
-            SEJA UM ALUNO DO CURSO EAD MANUTENÇÃO DE CELULARES
-          </p>
+          <button 
+            onClick={scrollToCheckout}
+            className="text-white font-tech font-black text-lg md:text-2xl lg:text-3xl uppercase tracking-wider px-6 py-4 md:px-8 md:py-6 rounded-xl md:rounded-2xl bg-blue-500/20 border border-blue-500/40 shadow-[0_0_30px_rgba(14,165,233,0.6),0_0_60px_rgba(14,165,233,0.3)] cursor-pointer transition-all hover:bg-blue-500/30 hover:border-blue-500/60 hover:shadow-[0_0_40px_rgba(14,165,233,0.8),0_0_80px_rgba(14,165,233,0.5)] active:scale-95"
+          >
+            <span className="bg-blue-400 text-black px-2 py-1 rounded-md mr-2">SEJA</span> UM ALUNO DO CURSO EAD MANUTENÇÃO DE CELULARES <span className="ml-2">VOCÊ TAMBÉM!</span>
+          </button>
         </div>
       </div>
     </section>
@@ -667,8 +651,8 @@ const BonusSection: React.FC = () => {
             
             <div className="flex justify-center group">
               <img 
-                src="https://curso-manutencaodecelular.online/wp-content/uploads/2024/01/DESIGN-CILIOS-E-SOBRANCELHAS-2.png" 
-                alt="12 Livros Coloridos" 
+                src="https://avancoprofissional.online/wp-content/uploads/2024/08/LOGO-Profissionalize-3-150x150.png" 
+                alt="Logo Instituto Professionalize Maxxima" 
                 className="w-full max-w-[180px] md:max-w-[240px] h-auto object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-110"
               />
             </div>
