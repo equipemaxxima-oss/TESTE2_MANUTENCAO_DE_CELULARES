@@ -147,29 +147,6 @@ const Hero: React.FC = () => {
   const videoContainerRef = React.useRef<HTMLDivElement>(null);
   const [showVideoHint, setShowVideoHint] = useState(true);
   const [showHandAnimation, setShowHandAnimation] = useState(true);
-  const [arrowPosition, setArrowPosition] = useState({ top: '8%', left: '88%' });
-
-  useEffect(() => {
-    // Detectar navegador e sistema operacional para ajustar posição da seta
-    const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent.toLowerCase() : '';
-    const isSafari = /safari/.test(userAgent) && !/chrome/.test(userAgent);
-    const isChrome = /chrome/.test(userAgent) && !/edge/.test(userAgent);
-    const isFirefox = /firefox/.test(userAgent);
-    const isEdge = /edge/.test(userAgent);
-    const isMac = /macintosh|mac os x/.test(userAgent);
-    const isMobile = /mobile|android|iphone|ipad/.test(userAgent);
-    
-    // Ajustar posição baseado no navegador e dispositivo
-    // No YouTube, o ícone de desmutar fica no canto inferior esquerdo
-    // Posições diferentes para mobile e desktop
-    if (isMobile) {
-      // Mobile: canto inferior esquerdo (botão de áudio) - mais para baixo e direita
-      setArrowPosition({ top: '90%', left: '16%' });
-    } else {
-      // Desktop (todos os navegadores): canto inferior esquerdo - mais para baixo e direita
-      setArrowPosition({ top: '92%', left: '18%' });
-    }
-  }, []);
 
   useEffect(() => {
     // Esconder a mensagem após 1 minuto
@@ -181,10 +158,10 @@ const Hero: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Esconder a animação da seta após 2.5s (descida) + 60s (piscando) = 62.5s
+    // Esconder a animação da seta junto com o botão de mensagem (após 1 minuto)
     const timer = setTimeout(() => {
       setShowHandAnimation(false);
-    }, 62500);
+    }, 60000);
 
     return () => clearTimeout(timer);
   }, []);
@@ -274,13 +251,53 @@ const Hero: React.FC = () => {
         </p>
         
         {showVideoHint && (
-          <div ref={hintButtonRef} className="max-w-4xl mx-auto mb-3 md:mb-4 animate-fade-in">
+          <div ref={hintButtonRef} className="max-w-4xl mx-auto mb-3 md:mb-4 animate-fade-in relative">
             <div className="inline-flex items-center gap-2 sm:gap-3 bg-blue-500/20 border border-blue-500/40 rounded-full px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 backdrop-blur-sm shadow-lg">
               <Play className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-blue-400 flex-shrink-0 animate-pulse" />
               <p className="text-blue-300 font-tech font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-wider text-center">
                 Seu vídeo já começou, clique nele para ativar o som
               </p>
             </div>
+            {/* Seta apontando para baixo com efeito neon e piscante */}
+            {showHandAnimation && (
+              <div className="absolute left-1/2 -translate-x-1/2 top-full -mt-1 pointer-events-none z-30 arrow-down-neon">
+                <svg 
+                  className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 lg:w-18 lg:h-18" 
+                  viewBox="0 0 100 100" 
+                  fill="none" 
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <defs>
+                    <filter id="neon-glow">
+                      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+                      <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                      </feMerge>
+                    </filter>
+                  </defs>
+                  {/* Seta apontando para baixo */}
+                  <path 
+                    d="M50 20 L50 70 M35 55 L50 70 L65 55" 
+                    stroke="#60a5fa" 
+                    strokeWidth="12"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                    filter="url(#neon-glow)"
+                  />
+                  <path 
+                    d="M50 20 L50 70 M35 55 L50 70 L65 55" 
+                    stroke="#3b82f6" 
+                    strokeWidth="10"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    fill="none"
+                    filter="url(#neon-glow)"
+                  />
+                </svg>
+              </div>
+            )}
           </div>
         )}
         
@@ -292,58 +309,6 @@ const Hero: React.FC = () => {
             <img src="https://curso-manutencaodecelular.online/wp-content/uploads/2024/10/INFORMATICA-COMPLETA-1.png" alt="Selo Qualidade" className="w-full h-full object-contain" />
           </div>
 
-          {/* Animação da seta caminhando em direção ao botão de som */}
-          {showHandAnimation && showVideoHint && (
-            <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">
-              <div className="hand-animation-wrapper">
-                <div 
-                  className="hand-click-animation"
-                  style={{
-                    '--arrow-top': arrowPosition.top,
-                    '--arrow-left': arrowPosition.left,
-                  } as React.CSSProperties}
-                >
-                  <div className="relative">
-                    <svg 
-                      className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-24 lg:h-24" 
-                      viewBox="0 0 100 100" 
-                      fill="none" 
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <defs>
-                        <filter id="glow">
-                          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
-                          <feMerge>
-                            <feMergeNode in="coloredBlur"/>
-                            <feMergeNode in="SourceGraphic"/>
-                          </feMerge>
-                        </filter>
-                      </defs>
-                      {/* Seta apontando para a direita - mais grossa com brilho */}
-                      <path 
-                        d="M20 50 L70 50 M60 35 L70 50 L60 65" 
-                        stroke="#60a5fa" 
-                        strokeWidth="10"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                        filter="url(#glow)"
-                      />
-                      <path 
-                        d="M20 50 L70 50 M60 35 L70 50 L60 65" 
-                        stroke="#3b82f6" 
-                        strokeWidth="8"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        fill="none"
-                        filter="url(#glow)"
-                      />
-                    </svg>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
         
         <button 
@@ -1281,52 +1246,30 @@ export default function App() {
           .animate-fade-in {
             animation: fade-in 0.5s ease-out;
           }
-          @keyframes arrow-down {
-            0% {
-              top: -12%;
-              left: 50%;
-              transform: translate(-50%, -50%) rotate(-10deg);
-              opacity: 1;
-            }
-            15% {
-              top: 2%;
-              left: 50%;
-              transform: translate(-50%, -50%) rotate(-5deg);
-              opacity: 1;
-            }
-            100% {
-              top: var(--arrow-top, 92%);
-              left: var(--arrow-left, 18%);
-              transform: translate(-50%, -50%) rotate(5deg);
-              opacity: 1;
-            }
-          }
-          @keyframes arrow-blink {
+          @keyframes arrow-down-neon-blink {
             0%, 100% { 
-              filter: brightness(1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 20px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 40px rgba(14, 165, 233, 0.6)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.4));
+              filter: brightness(1) drop-shadow(0 0 10px rgba(96, 165, 250, 0.8)) drop-shadow(0 0 20px rgba(59, 130, 246, 0.6)) drop-shadow(0 0 30px rgba(14, 165, 233, 0.4));
+              opacity: 1;
+              transform: translate(-50%, 0) scale(1);
             }
             25% { 
-              filter: brightness(1.5) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 40px rgba(14, 165, 233, 1)) drop-shadow(0 0 80px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 120px rgba(14, 165, 233, 0.6));
+              filter: brightness(1.5) drop-shadow(0 0 20px rgba(96, 165, 250, 1)) drop-shadow(0 0 40px rgba(59, 130, 246, 0.8)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.6));
+              opacity: 0.9;
+              transform: translate(-50%, 0) scale(1.05);
             }
             50% { 
-              filter: brightness(1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 20px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 40px rgba(14, 165, 233, 0.6)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.4));
+              filter: brightness(1) drop-shadow(0 0 10px rgba(96, 165, 250, 0.8)) drop-shadow(0 0 20px rgba(59, 130, 246, 0.6)) drop-shadow(0 0 30px rgba(14, 165, 233, 0.4));
+              opacity: 1;
+              transform: translate(-50%, 0) scale(1);
             }
             75% { 
-              filter: brightness(1.5) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 40px rgba(14, 165, 233, 1)) drop-shadow(0 0 80px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 120px rgba(14, 165, 233, 0.6));
+              filter: brightness(1.5) drop-shadow(0 0 20px rgba(96, 165, 250, 1)) drop-shadow(0 0 40px rgba(59, 130, 246, 0.8)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.6));
+              opacity: 0.9;
+              transform: translate(-50%, 0) scale(1.05);
             }
           }
-          .hand-animation-wrapper {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: visible;
-          }
-          .hand-click-animation {
-            position: absolute;
-            animation: arrow-down 2.5s ease-out forwards, arrow-blink 1s ease-in-out 2.5s infinite;
-          }
-          .hand-click-animation > div {
-            animation: arrow-blink 1s ease-in-out 2.5s infinite;
+          .arrow-down-neon {
+            animation: arrow-down-neon-blink 1s ease-in-out infinite;
           }
         `}
       </style>
