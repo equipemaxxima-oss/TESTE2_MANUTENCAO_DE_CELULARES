@@ -22,7 +22,8 @@ import {
   BookOpen,
   Calendar,
   X,
-  ArrowDown
+  ArrowDown,
+  Hand
 } from 'lucide-react';
 
 // --- Constants ---
@@ -142,6 +143,28 @@ const StudentCounter: React.FC = () => {
 const Hero: React.FC = () => {
   const videoRef = React.useRef<HTMLDivElement>(null);
   const playerRef = React.useRef<any>(null);
+  const hintButtonRef = React.useRef<HTMLDivElement>(null);
+  const videoContainerRef = React.useRef<HTMLDivElement>(null);
+  const [showVideoHint, setShowVideoHint] = useState(true);
+  const [showHandAnimation, setShowHandAnimation] = useState(true);
+
+  useEffect(() => {
+    // Esconder a mensagem após 1 minuto
+    const timer = setTimeout(() => {
+      setShowVideoHint(false);
+    }, 60000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    // Esconder a animação da seta após 2.5s (descida) + 60s (piscando) = 62.5s
+    const timer = setTimeout(() => {
+      setShowHandAnimation(false);
+    }, 62500);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   useEffect(() => {
     // Função para inicializar o player do YouTube
@@ -227,13 +250,71 @@ const Hero: React.FC = () => {
           Domine o mercado mais lucrativo do país. Aprenda do <span className="text-white font-bold">zero ao avançado</span> com o método 100% online do Instituto Professionalize Maxxima.
         </p>
         
-        <div className="max-w-4xl mx-auto mb-10 rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border-2 border-blue-500/20 bg-black aspect-video relative">
+        {showVideoHint && (
+          <div ref={hintButtonRef} className="max-w-4xl mx-auto mb-3 md:mb-4 animate-fade-in">
+            <div className="inline-flex items-center gap-2 sm:gap-3 bg-blue-500/20 border border-blue-500/40 rounded-full px-4 sm:px-6 md:px-8 py-2 sm:py-3 md:py-4 backdrop-blur-sm shadow-lg">
+              <Play className="h-4 w-4 sm:h-5 sm:w-5 md:h-6 md:w-6 text-blue-400 flex-shrink-0 animate-pulse" />
+              <p className="text-blue-300 font-tech font-bold text-[10px] sm:text-xs md:text-sm uppercase tracking-wider text-center">
+                Seu vídeo já começou, clique nele para ativar o som
+              </p>
+            </div>
+          </div>
+        )}
+        
+        <div ref={videoContainerRef} className="max-w-4xl mx-auto mb-10 rounded-2xl md:rounded-[2rem] overflow-hidden shadow-2xl border-2 border-blue-500/20 bg-black aspect-video relative">
           {/* Player do YouTube usando a API */}
           <div ref={videoRef} className="absolute inset-0 w-full h-full"></div>
           
           <div className="absolute top-4 right-4 md:top-6 md:right-6 w-12 h-12 md:w-20 md:h-20 pointer-events-none z-10 opacity-60">
             <img src="https://curso-manutencaodecelular.online/wp-content/uploads/2024/10/INFORMATICA-COMPLETA-1.png" alt="Selo Qualidade" className="w-full h-full object-contain" />
           </div>
+
+          {/* Animação da seta caminhando em direção ao botão de som */}
+          {showHandAnimation && showVideoHint && (
+            <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">
+              <div className="hand-animation-wrapper">
+                <div className="hand-click-animation">
+                  <div className="relative">
+                    <svg 
+                      className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-24 lg:h-24" 
+                      viewBox="0 0 100 100" 
+                      fill="none" 
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <defs>
+                        <filter id="glow">
+                          <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                          <feMerge>
+                            <feMergeNode in="coloredBlur"/>
+                            <feMergeNode in="SourceGraphic"/>
+                          </feMerge>
+                        </filter>
+                      </defs>
+                      {/* Seta apontando para a direita - mais grossa com brilho */}
+                      <path 
+                        d="M20 50 L70 50 M60 35 L70 50 L60 65" 
+                        stroke="#60a5fa" 
+                        strokeWidth="10"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="none"
+                        filter="url(#glow)"
+                      />
+                      <path 
+                        d="M20 50 L70 50 M60 35 L70 50 L60 65" 
+                        stroke="#3b82f6" 
+                        strokeWidth="8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        fill="none"
+                        filter="url(#glow)"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
         
         <button 
@@ -1163,6 +1244,60 @@ export default function App() {
           @keyframes scale-in-center {
             0% { transform: scale(0.9); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
+          }
+          @keyframes fade-in {
+            0% { opacity: 0; transform: translateY(-10px); }
+            100% { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fade-in {
+            animation: fade-in 0.5s ease-out;
+          }
+          @keyframes arrow-down {
+            0% {
+              top: -12%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-10deg);
+              opacity: 1;
+            }
+            15% {
+              top: 2%;
+              left: 50%;
+              transform: translate(-50%, -50%) rotate(-5deg);
+              opacity: 1;
+            }
+            100% {
+              top: 94%;
+              left: 18%;
+              transform: translate(-50%, -50%) rotate(5deg);
+              opacity: 1;
+            }
+          }
+          @keyframes arrow-blink {
+            0%, 100% { 
+              filter: brightness(1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 20px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 40px rgba(14, 165, 233, 0.6)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.4));
+            }
+            25% { 
+              filter: brightness(1.5) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 40px rgba(14, 165, 233, 1)) drop-shadow(0 0 80px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 120px rgba(14, 165, 233, 0.6));
+            }
+            50% { 
+              filter: brightness(1) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 20px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 40px rgba(14, 165, 233, 0.6)) drop-shadow(0 0 60px rgba(14, 165, 233, 0.4));
+            }
+            75% { 
+              filter: brightness(1.5) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5)) drop-shadow(0 0 40px rgba(14, 165, 233, 1)) drop-shadow(0 0 80px rgba(14, 165, 233, 0.8)) drop-shadow(0 0 120px rgba(14, 165, 233, 0.6));
+            }
+          }
+          .hand-animation-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+          }
+          .hand-click-animation {
+            position: absolute;
+            animation: arrow-down 2.5s ease-out forwards;
+          }
+          .hand-click-animation > div {
+            animation: arrow-blink 1s ease-in-out 2.5s infinite;
           }
         `}
       </style>
