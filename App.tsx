@@ -147,6 +147,29 @@ const Hero: React.FC = () => {
   const videoContainerRef = React.useRef<HTMLDivElement>(null);
   const [showVideoHint, setShowVideoHint] = useState(true);
   const [showHandAnimation, setShowHandAnimation] = useState(true);
+  const [arrowPosition, setArrowPosition] = useState({ top: '8%', left: '88%' });
+
+  useEffect(() => {
+    // Detectar navegador e sistema operacional para ajustar posição da seta
+    const userAgent = typeof window !== 'undefined' ? window.navigator.userAgent.toLowerCase() : '';
+    const isSafari = /safari/.test(userAgent) && !/chrome/.test(userAgent);
+    const isChrome = /chrome/.test(userAgent) && !/edge/.test(userAgent);
+    const isFirefox = /firefox/.test(userAgent);
+    const isEdge = /edge/.test(userAgent);
+    const isMac = /macintosh|mac os x/.test(userAgent);
+    const isMobile = /mobile|android|iphone|ipad/.test(userAgent);
+    
+    // Ajustar posição baseado no navegador e dispositivo
+    // No YouTube, o ícone de desmutar fica no canto inferior esquerdo
+    // Posições diferentes para mobile e desktop
+    if (isMobile) {
+      // Mobile: canto inferior esquerdo (botão de áudio) - mais para baixo e direita
+      setArrowPosition({ top: '90%', left: '16%' });
+    } else {
+      // Desktop (todos os navegadores): canto inferior esquerdo - mais para baixo e direita
+      setArrowPosition({ top: '92%', left: '18%' });
+    }
+  }, []);
 
   useEffect(() => {
     // Esconder a mensagem após 1 minuto
@@ -273,7 +296,13 @@ const Hero: React.FC = () => {
           {showHandAnimation && showVideoHint && (
             <div className="absolute inset-0 pointer-events-none z-20 overflow-visible">
               <div className="hand-animation-wrapper">
-                <div className="hand-click-animation">
+                <div 
+                  className="hand-click-animation"
+                  style={{
+                    '--arrow-top': arrowPosition.top,
+                    '--arrow-left': arrowPosition.left,
+                  } as React.CSSProperties}
+                >
                   <div className="relative">
                     <svg 
                       className="w-16 h-16 sm:w-18 sm:h-18 md:w-20 md:h-20 lg:w-24 lg:h-24" 
@@ -1266,8 +1295,8 @@ export default function App() {
               opacity: 1;
             }
             100% {
-              top: 94%;
-              left: 18%;
+              top: var(--arrow-top, 92%);
+              left: var(--arrow-left, 18%);
               transform: translate(-50%, -50%) rotate(5deg);
               opacity: 1;
             }
@@ -1294,7 +1323,7 @@ export default function App() {
           }
           .hand-click-animation {
             position: absolute;
-            animation: arrow-down 2.5s ease-out forwards;
+            animation: arrow-down 2.5s ease-out forwards, arrow-blink 1s ease-in-out 2.5s infinite;
           }
           .hand-click-animation > div {
             animation: arrow-blink 1s ease-in-out 2.5s infinite;
