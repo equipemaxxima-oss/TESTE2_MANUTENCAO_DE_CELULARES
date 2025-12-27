@@ -1062,7 +1062,7 @@ const SocialLinks: React.FC = () => {
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center justify-center text-center">
           <h3 className="font-tech font-black text-sm md:text-2xl text-white mb-6 uppercase tracking-[0.3em] leading-tight">
-            SIGA A PROFISSIONALIZE MAXXIMA <br className="hidden md:block" /> NAS REDES SOCIAIS
+            SIGA O INSTITUTO PROFISSIONALIZE MAXXIMA <br className="hidden md:block" /> NAS REDES SOCIAIS
           </h3>
           <div className="flex justify-center items-center gap-10 md:gap-20 flex-wrap">
             <a href="https://www.instagram.com/inst.profissionalizemaxxima/" target="_blank" rel="noopener noreferrer" className="text-white/80 hover:text-white transition-all hover:scale-125 animate-bounce-subtle">
