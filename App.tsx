@@ -371,9 +371,11 @@ const VideoTestimonials: React.FC = () => {
         <div className="text-center mt-8 md:mt-12">
           <button 
             onClick={scrollToCheckout}
-            className="text-white font-tech font-black text-lg md:text-2xl lg:text-3xl uppercase tracking-wider px-6 py-4 md:px-8 md:py-6 rounded-xl md:rounded-2xl bg-blue-500/20 border border-blue-500/40 shadow-[0_0_30px_rgba(14,165,233,0.6),0_0_60px_rgba(14,165,233,0.3)] cursor-pointer transition-all hover:bg-blue-500/30 hover:border-blue-500/60 hover:shadow-[0_0_40px_rgba(14,165,233,0.8),0_0_80px_rgba(14,165,233,0.5)] active:scale-95"
+            className="text-white font-tech font-black text-sm md:text-base lg:text-lg uppercase tracking-wider px-6 py-4 md:px-8 md:py-6 rounded-xl md:rounded-2xl bg-blue-500/20 border border-blue-500/40 shadow-[0_0_30px_rgba(14,165,233,0.6),0_0_60px_rgba(14,165,233,0.3)] cursor-pointer transition-all hover:bg-blue-500/30 hover:border-blue-500/60 hover:shadow-[0_0_40px_rgba(14,165,233,0.8),0_0_80px_rgba(14,165,233,0.5)] active:scale-95 no-underline"
           >
-            <span className="bg-blue-400 text-black px-2 py-1 rounded-md mr-2">SEJA</span> UM ALUNO DO CURSO EAD MANUTENÇÃO DE CELULARES <span className="ml-2">VOCÊ TAMBÉM!</span>
+            <div className="flex flex-wrap items-center justify-center gap-1 md:gap-2">
+              <span className="bg-blue-400 text-black px-2 py-1 rounded-md no-underline">SEJA</span> <span className="bg-blue-400 text-black px-2 py-1 rounded-md">UM ALUNO DO CURSO EAD</span> <span className="bg-blue-400 text-black px-2 py-1 rounded-md">MANUTENÇÃO DE CELULARES</span> <span className="bg-blue-400 text-black px-2 py-1 rounded-md">VOCÊ</span> <span className="bg-blue-400 text-black px-2 py-1 rounded-md">TAMBÉM!</span>
+            </div>
           </button>
         </div>
       </div>
@@ -582,9 +584,12 @@ const CareerInfoSection: React.FC = () => {
               <div className="text-center">
                 <button 
                   onClick={scrollToCheckout}
-                  className="w-full bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 text-white font-tech font-black text-lg md:text-xl lg:text-2xl px-6 md:px-8 py-4 md:py-5 rounded-xl transition-all active:scale-95 uppercase tracking-widest shadow-2xl animate-blink-button relative overflow-hidden mb-2"
+                  className="w-full bg-gradient-to-r from-blue-500 via-blue-400 to-blue-500 text-white font-tech font-black text-sm md:text-base lg:text-lg px-6 md:px-8 py-4 md:py-5 rounded-xl transition-all active:scale-95 uppercase tracking-widest shadow-2xl animate-blink-button relative overflow-hidden mb-2"
                 >
-                  <span className="relative z-10">LUCRE 180 EM 20'</span>
+                  <span className="relative z-10 block leading-tight">
+                    <span className="block">LUCRE R$180,00</span>
+                    <span className="block">EM 20 MINUTOS</span>
+                  </span>
                 </button>
                 <p className="text-gray-400 text-xs md:text-sm mt-2">Lucro médio por reparo rápido</p>
               </div>
@@ -649,12 +654,21 @@ const BonusSection: React.FC = () => {
               </div>
             </div>
             
-            <div className="flex justify-center group">
-              <img 
-                src="https://avancoprofissional.online/wp-content/uploads/2024/08/LOGO-Profissionalize-3-150x150.png" 
-                alt="Logo Instituto Professionalize Maxxima" 
-                className="w-full max-w-[180px] md:max-w-[240px] h-auto object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-110"
-              />
+            <div className="flex justify-center items-center gap-4 md:gap-6 flex-wrap">
+              <div className="flex justify-center group">
+                <img 
+                  src="https://avancoprofissional.online/wp-content/uploads/2024/08/LOGO-Profissionalize-3-150x150.png" 
+                  alt="Logo Instituto Professionalize Maxxima" 
+                  className="w-full max-w-[120px] md:max-w-[150px] h-auto object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
+              <div className="flex justify-center group">
+                <img 
+                  src="https://curso-manutencaodecelular.online/wp-content/uploads/2024/01/12-livros_reduzido.png" 
+                  alt="12 Livros Coloridos" 
+                  className="w-full max-w-[120px] md:max-w-[150px] h-auto object-contain drop-shadow-2xl transition-transform duration-500 group-hover:scale-110"
+                />
+              </div>
             </div>
           </div>
         </div>
