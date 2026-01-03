@@ -42,7 +42,7 @@ const scrollToCheckout = () => {
     });
   }
   
-  const element = document.getElementById('checkout-section');
+  const element = document.getElementById('pricing');
   if (element) {
     element.scrollIntoView({ behavior: 'smooth' });
   }
@@ -57,9 +57,9 @@ const goToHotmartCheckout = () => {
     });
   }
   
-  // Redirecionar para o checkout da Hotmart
+  // Redirecionar para o checkout da Hotmart na mesma página
   if (typeof window !== 'undefined') {
-    window.open(HOTMART_LINK, '_blank');
+    window.location.href = HOTMART_LINK;
   }
 };
 
@@ -795,6 +795,38 @@ const Pricing: React.FC = () => {
     return () => clearInterval(timer);
   }, [timeLeft]);
 
+  useEffect(() => {
+    // Rastrear visualização da seção de checkout
+    // IMPORTANTE: ViewContent apenas indica que o usuário VISUALIZOU o checkout
+    // NÃO significa que ele comprou - isso deve ser disparado pela Hotmart após pagamento
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && typeof window !== 'undefined' && (window as any).fbq) {
+            (window as any).fbq('track', 'ViewContent', {
+              content_name: 'Checkout - Curso Manutenção de Celular',
+              content_category: 'Checkout',
+              content_type: 'product'
+            });
+            observer.disconnect(); // Dispara apenas uma vez para evitar duplicação
+          }
+        });
+      },
+      { threshold: 0.5 }
+    );
+
+    const element = document.getElementById('pricing');
+    if (element) {
+      observer.observe(element);
+    }
+
+    return () => {
+      if (element) {
+        observer.unobserve(element);
+      }
+    };
+  }, []);
+
   return (
     <section id="pricing" className="pt-16 sm:pt-20 md:pt-24 pb-12 sm:pb-16 md:pb-20 lg:pb-24 relative bg-black">
       <div className="container mx-auto px-3 sm:px-4 max-w-lg md:max-w-2xl">
@@ -837,7 +869,7 @@ const Pricing: React.FC = () => {
           </div>
 
           <button 
-            onClick={scrollToCheckout}
+            onClick={goToHotmartCheckout}
             className="w-full bg-blue-600 hover:bg-blue-500 text-white font-tech font-black text-xs sm:text-sm md:text-lg py-4 sm:py-5 md:py-6 rounded-xl sm:rounded-2xl transition-all shadow-xl shadow-green-900/30 uppercase tracking-widest active:scale-95 animate-neon-button"
           >
             QUERO MINHA VAGA AGORA
@@ -852,138 +884,6 @@ const Pricing: React.FC = () => {
   );
 };
 
-const CheckoutSection: React.FC = () => {
-  const [translateY, setTranslateY] = useState(-300);
-
-  useEffect(() => {
-    // Ajustar translateY baseado no tamanho da tela
-    const updateTranslateY = () => {
-      if (window.innerWidth < 640) {
-        setTranslateY(-280); // Mobile
-      } else {
-        setTranslateY(-300); // Desktop
-      }
-    };
-
-    updateTranslateY();
-    window.addEventListener('resize', updateTranslateY);
-
-    // Rastrear visualização da seção de checkout
-    // IMPORTANTE: ViewContent apenas indica que o usuário VISUALIZOU o checkout
-    // NÃO significa que ele comprou - isso deve ser disparado pela Hotmart após pagamento
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting && typeof window !== 'undefined' && (window as any).fbq) {
-            (window as any).fbq('track', 'ViewContent', {
-              content_name: 'Checkout - Curso Manutenção de Celular',
-              content_category: 'Checkout',
-              content_type: 'product'
-            });
-            observer.disconnect(); // Dispara apenas uma vez para evitar duplicação
-          }
-        });
-      },
-      { threshold: 0.5 }
-    );
-
-    const element = document.getElementById('checkout-section');
-    if (element) {
-      observer.observe(element);
-    }
-
-    // Tentar rolar o iframe para a seção de pagamento após carregar
-    const iframe = document.querySelector('#checkout-section iframe') as HTMLIFrameElement;
-    if (iframe) {
-      const handleLoad = () => {
-        try {
-          // Tentar acessar o conteúdo do iframe (pode falhar por CORS)
-          const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-          if (iframeDoc) {
-            // Procurar por elementos relacionados ao formulário de pagamento
-            const paymentSection = iframeDoc.querySelector('[class*="payment"], [class*="checkout"], form');
-            if (paymentSection) {
-              paymentSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-          }
-        } catch (e) {
-          // CORS pode bloquear o acesso, então usamos o transform CSS
-          console.log('Não foi possível acessar o conteúdo do iframe devido a políticas de segurança');
-        }
-      };
-      
-      iframe.addEventListener('load', handleLoad);
-      return () => {
-        window.removeEventListener('resize', updateTranslateY);
-        if (element) {
-          observer.unobserve(element);
-        }
-        iframe.removeEventListener('load', handleLoad);
-      };
-    }
-
-    return () => {
-      window.removeEventListener('resize', updateTranslateY);
-      if (element) {
-        observer.unobserve(element);
-      }
-    };
-  }, []);
-
-  return (
-    <section id="checkout-section" className="py-12 sm:py-16 md:py-20 lg:py-24 bg-black">
-      <div className="container mx-auto px-3 sm:px-4 text-center">
-        <div className="flex items-center justify-center gap-2 sm:gap-3 bg-gradient-to-r from-blue-600/20 to-blue-500/20 border border-blue-500/30 px-4 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 rounded-full backdrop-blur-sm mb-6 sm:mb-8 md:mb-10 max-w-2xl mx-auto">
-          <Users className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-blue-500 flex-shrink-0" />
-          <div className="flex flex-col sm:flex-row items-center gap-1 sm:gap-2">
-            <span className="text-white font-tech font-bold text-xs sm:text-sm md:text-base uppercase tracking-widest">
-              JÁ SÃO MAIS DE
-            </span>
-            <span className="text-blue-500 font-tech font-black text-xl sm:text-2xl md:text-3xl lg:text-4xl">
-              25.000+
-            </span>
-            <span className="text-white font-tech font-bold text-xs sm:text-sm md:text-base uppercase tracking-widest">
-              ALUNOS
-            </span>
-          </div>
-        </div>
-        
-        <div className="flex items-center justify-center gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8 md:mb-10 px-2">
-          <ArrowDown className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-blue-500 animate-bounce flex-shrink-0" />
-          <h2 className="font-tech font-black text-base sm:text-lg md:text-xl lg:text-3xl text-white uppercase tracking-widest text-center">
-            PAGAMENTO SEGURO <span className="text-blue-500 block sm:inline sm:ml-1">VIA HOTMART</span>
-          </h2>
-          <ArrowDown className="h-5 w-5 sm:h-6 sm:w-6 md:h-8 md:w-8 text-blue-500 animate-bounce flex-shrink-0" />
-        </div>
-        <div className="max-w-4xl mx-auto rounded-xl sm:rounded-2xl md:rounded-[3rem] border border-white/5 overflow-hidden bg-[#0a0f12] shadow-2xl relative" style={{ height: 'clamp(500px, 80vh, 900px)', overflow: 'hidden', minHeight: '500px' }}>
-          <div 
-            className="absolute inset-0"
-            style={{ 
-              overflow: 'hidden',
-              height: '100%'
-            }}
-          >
-          <iframe 
-            src={HOTMART_LINK} 
-              className="w-full border-0"
-              style={{ 
-                height: '1400px',
-                width: '100%',
-                transform: `translateY(${translateY}px)`,
-                pointerEvents: 'auto',
-                border: 'none',
-                display: 'block'
-              }}
-            title="Checkout Hotmart"
-              loading="lazy"
-              allow="payment"
-          ></iframe>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
 
 const FAQ: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
@@ -1111,8 +1011,8 @@ const FloatingCTAButton: React.FC = () => {
       const shouldShow = scrollPos > 400;
       setIsVisible(shouldShow);
 
-      // Verificar se está na seção de checkout
-      const checkoutSection = document.getElementById('checkout-section');
+      // Verificar se está na seção de checkout (pricing)
+      const checkoutSection = document.getElementById('pricing');
       if (checkoutSection) {
         const checkoutTop = checkoutSection.offsetTop;
         const checkoutBottom = checkoutTop + checkoutSection.offsetHeight;
@@ -1284,7 +1184,6 @@ export default function App() {
       <BonusSection />
       <CertificateSection />
       <Pricing />
-      <CheckoutSection />
       <FAQ />
       <SocialLinks />
       <Footer />
